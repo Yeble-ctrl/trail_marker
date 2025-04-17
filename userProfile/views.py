@@ -1,14 +1,14 @@
 from django.contrib.auth.models import User
-from userProfile.models import Profile
-from userProfile.serializers import ProfileSerializer
+from userProfile.models import Profile, Qualification, WorkExperience, skills
+from userProfile.serializers import ProfileSerializer, QualificationSerializer, WorkExperienceSerializer, skillsSerializer
 from rest_framework import generics, mixins
 from rest_framework.permissions import IsAuthenticated
 from userProfile.permissions import IsOwnerOrReadOnly
 
+# Generic views for the Profile model
 class createProfile(mixins.CreateModelMixin, generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -16,26 +16,72 @@ class createProfile(mixins.CreateModelMixin, generics.GenericAPIView):
         return self.create(request, *args, **kwargs)
 
 class GetProfiles(generics.ListAPIView):
-    queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
 
-class ProfileDetails(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.DestroyModelMixin,
-                  generics.GenericAPIView):
-    queryset = Profile.objects.all()
+    def get_queryset(self):
+        queryset = Profile.objects.all()
+        username = self.request.query_params.get('username')
+        user = User.objects.get(username = username)
+        if username is not None:
+            queryset = queryset.filter(user = user)
+        return queryset
+
+class ProfileDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = ProfileSerializer
+    
+    def get_object(self):
+        user = self.request.user
+        return Profile.objects.get(user = user)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+# Generic views for the Qualifications model
+class Qualifications(generics.ListCreateAPIView):
+    permisson_classes = [IsAuthenticated]
+    serializer_class = QualificationSerializer
+    queryset = Qualification.objects.all()
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+class QualificationDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = QualificationSerializer
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    def get_object(self):
+        user = self.request.user
+        return Qualification.objects.get(user = user)
+
+# Generic views for the work experience model
+class WorkExperiences(generics.ListCreateAPIView):
+    permisson_classes = [IsAuthenticated]
+    serializer_class = WorkExperienceSerializer
+    queryset = WorkExperience.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class WorkExperienceDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = WorkExperienceSerializer
+
+    def get_object(self):
+        user = self.request.user
+        return WorkExperience.objects.get(user = user)
+
+# Generic views for the skills model
+class GetCreateSkills(generics.ListCreateAPIView):
+    permisson_classes = [IsAuthenticated]
+    serializer_class = skillsSerializer
+    queryset = skills.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class skillsDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = skillsSerializer
+
+    def get_object(self):
+        user = self.request.user
+        return skills.objects.get(user = user)

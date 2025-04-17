@@ -17,7 +17,12 @@ class Profile(models.Model):
 class Qualification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     qualification = models.CharField(max_length=200)
+    certificationFile = models.FileField(upload_to=user_directory_path, blank=True)
 
 class WorkExperience(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     workExperince = models.CharField(max_length=200)
+
+class skills(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    skill = models.CharField(max_length=200)
