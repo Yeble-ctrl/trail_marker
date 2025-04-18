@@ -11,6 +11,9 @@ urlpatterns = [
     # Base Url for the user profile app
     path('profiles/', include('userProfile.urls')),
 
+    # Base URl for the blog app
+    path('blogs/', include('blog.urls')),
+
     # Urls for the simple jwt app
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
