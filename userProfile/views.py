@@ -1,23 +1,21 @@
 from django.contrib.auth.models import User
-from userProfile.models import Profile, Qualification, WorkExperience, skills
+from userProfile.models import Profile, Qualification, WorkExperience, skills as Skill
 from userProfile.serializers import ProfileSerializer, QualificationSerializer, WorkExperienceSerializer, skillsSerializer
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from userProfile.permissions import IsOwnerOrReadOnly
 
 # Generic views for the Profile model
-class createProfile(mixins.CreateModelMixin, generics.GenericAPIView):
+class Profiles(generics.ListCreateAPIView):
+    """
+    View for Post and Get requests
+    """
+    queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class GetProfiles(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ProfileSerializer
 
     def get_queryset(self):
         queryset = Profile.objects.all()
@@ -70,10 +68,10 @@ class WorkExperienceDetails(generics.RetrieveUpdateDestroyAPIView):
         return WorkExperience.objects.get(user = user)
 
 # Generic views for the skills model
-class GetCreateSkills(generics.ListCreateAPIView):
+class Skills(generics.ListCreateAPIView):
     permisson_classes = [IsAuthenticated]
     serializer_class = skillsSerializer
-    queryset = skills.objects.all()
+    queryset = Skill.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -84,4 +82,4 @@ class skillsDetails(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         user = self.request.user
-        return skills.objects.get(user = user)
+        return Skill.objects.get(user = user)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # My apps
     'accounts',
     'userProfile',
+    'blog',
     # Third party django apps
     'rest_framework',
     'rest_framework_simplejwt',

@@ -13,7 +13,7 @@ class BlogSerializer(serializers.ModelSerializer):
 class BlogPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.BlogPost
-        exclude = ['blog']
+        fields = '__all__'
 
     def create(self, validated_data):
         return models.BlogPost.objects.create(**validated_data)
@@ -21,7 +21,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 class BlogPostPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.BlogPostPhoto
-        exclude = ['owner']
+        fields = '__all__'
 
     def create(self, validated_data):
         return models.BlogPostPhoto.objects.create(**validated_data)
