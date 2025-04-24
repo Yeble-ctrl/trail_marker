@@ -13,7 +13,7 @@ class Blogs(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(owner=self.request.user)
 
 class BlogDetails(generics.RetrieveUpdateDestroyAPIView):
     """
