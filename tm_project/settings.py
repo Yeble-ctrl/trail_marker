@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
-from dbUrl import databaseUrl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -102,7 +101,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default=databaseUrl,
+        default='postgresql://yebo:1CukDQTcul0EAy1TPjEteY6gU6KQPVhK@dpg-d19ahrili9vc739qrf7g-a/trail_marker',
         conn_max_age=600
     )
 }
