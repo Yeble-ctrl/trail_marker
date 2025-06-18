@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from userProfile.models import Profile, Qualification, WorkExperience, skills as Skill
 from userProfile.serializers import ProfileSerializer, QualificationSerializer, WorkExperienceSerializer, skillsSerializer
-from rest_framework import generics
+from rest_framework import generics, parsers
 from rest_framework.permissions import IsAuthenticated
 from userProfile.permissions import IsOwnerOrReadOnly
 from django.http import Http404
@@ -12,6 +12,7 @@ class Profiles(generics.ListCreateAPIView):
     View for Post and Get requests
     """
     permission_classes = [IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     serializer_class = ProfileSerializer
 
     def perform_create(self, serializer):
@@ -19,9 +20,18 @@ class Profiles(generics.ListCreateAPIView):
 
     def get_queryset(self):
         first_name = self.request.query_params.get('first_name')
+        username = self.request.query_params.get('username')
         queryset = Profile.objects.all()
+
+        # Filter provided the first_name argument
         if first_name is not None:
             user = User.objects.get(first_name = first_name)
+            if user is not None:
+                queryset = queryset.filter(user = user)
+
+        # Filter provided the username argument
+        if username is not None:
+            user = User.objects.get(username = username)
             if user is not None:
                 queryset = queryset.filter(user = user)
         return queryset

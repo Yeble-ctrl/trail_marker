@@ -7,7 +7,7 @@ def user_directory_path(instance, filename):
     return "user_{0}/{1}".format(instance.user.id, filename)
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     dateOfBirth = models.DateField(blank=False)
     gender = models.CharField(choices=[("male", "male"), ("female", "female")], blank=False, max_length=6)
     gender.error_messages = {"invalid_choice":"You can only either be male or female."}
